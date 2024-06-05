@@ -1,0 +1,66 @@
+{% extends "index.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<div class="min-h-screen flex flex-col justify-top py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 class="text-center text-3xl font-extrabold text-gray-900 mb-8">
+            Welcome
+        </h2>
+
+        <!-- Sign Up Form -->
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Already have an account? Then please sign in.</h3>
+            <form class="space-y-6 signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                {% csrf_token %}
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <div class="mt-1">
+                        <input id="username" name="username" type="username" autocomplete="username" required class="input input-bordered w-full">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                    <div class="mt-1">
+                        <input id="email" name="email" type="email" autocomplete="email" required class="input input-bordered w-full">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="new-password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <div class="mt-1">
+                        <input id="new-password" name="password1" type="password" autocomplete="new-password" required class="input input-bordered w-full">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="new-confirm-password" class="block text-sm font-medium text-gray-700">Password (confirm)</label>
+                    <div class="mt-1">
+                        <input id="new-confirm-password" name="password2" type="password" autocomplete="new-confirm-password" required class="input input-bordered w-full">
+                    </div>
+                </div>
+
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+
+                {% include 'errors.html' %}
+
+                <div>
+                    <button type="submit" class="btn btn-primary w-full">Sign up</button>
+                </div>
+            </form>
+
+            <form class="space-y-6" style="margin-top: 1em;" method="GET" action="{% url 'account_login' %}">
+                <div>
+                    <button type="submit" class="btn btn-success w-full">Sign In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

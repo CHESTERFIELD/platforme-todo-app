@@ -1,0 +1,80 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+
+services:
+
+  web:
+    container_name: django-web-server
+    build:
+      context: .
+      dockerfile: ./build/docker/web/Dockerfile
+    command: python3 manage.py runserver 0.0.0.0:8000
+    restart: always
+    volumes:
+      - ./src/:/usr/src/app/
+    ports:
+      - 8080:8000
+    environment:
+      - RUN_MIGRATE=1
+      - RUN_COLLECTSTATIC=1
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+      - db
+    stdin_open: true
+    tty: true
+
+  redis:
+    image: redis:alpine
+    restart: always
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: ./build/docker/web/Dockerfile
+    command: celery -A app worker -l info --max-tasks-per-child=2 --concurrency 1
+    restart: always
+    volumes:
+      - ./src/:/usr/src/app/
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: ./build/docker/web/Dockerfile
+    command: celery -A app beat -l info
+    restart: always
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+
+  celery-monitor:
+    build:
+      context: .
+      dockerfile: ./build/docker/web/Dockerfile
+    command: celery -A app flower --port=5555
+    restart: always
+    depends_on:
+      - redis
+      - celery-worker
+      - celery-beat
+    env_file: .env
+    ports:
+      - 5555:5555
+
+  db:
+    image: postgres:15
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+    ports:
+      - 5432:5432

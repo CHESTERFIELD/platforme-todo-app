@@ -1,0 +1,53 @@
+{% extends "index.html" %}
+
+{% load tz_detect %}
+{% tz_detect %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block content %}
+
+<div class="min-h-screen flex flex-col justify-top py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 class="text-center text-3xl font-extrabold text-gray-900 mb-8">
+            Welcome
+        </h2>
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 mb-8">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">If you have not created an account yet, then please sign up first.</h3>
+
+            <form class="space-y-6 login" method="POST" action="{% url 'account_login' %}">
+                {% csrf_token %}
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <div class="mt-1">
+                        <input id="username" name="login" type="username" autocomplete="username" required class="input input-bordered w-full">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" autocomplete="current-password" required class="input input-bordered w-full">
+                    </div>
+                </div>
+
+                {% include 'errors.html' %}
+
+                <div>
+                    <button type="submit" class="btn btn-success w-full">Sign In</button>
+                </div>
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+            </form>
+
+            <form class="space-y-6" style="margin-top: 1em;" method="GET" action="{% url 'account_signup' %}">
+                <div>
+                    <button type="submit" class="btn btn-primary w-full">Sign Up</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

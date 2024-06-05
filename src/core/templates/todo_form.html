@@ -1,0 +1,39 @@
+{% load widget_tweaks %}
+{% load partials %}
+
+{% block content %}
+    <h1 class="prose-2xl mb-4">New Task Creation Form</h1>
+
+    <form class="mb-4"
+        hx-post="{% if object.pk %}{% url 'todo_edit' object.pk %}{% else %}{% url 'todo_new' %}{% endif %}"
+        hx-trigger="submit"
+        hx-target="#center-main"
+        hx-swap="innerHTML"
+        hx-redirect="{% url 'todo_list' %}">
+
+        <div class="form-control">
+            <label>Title</label>
+            {% render_field form.title class="input input-bordered max-w-xs" %}
+        </div>
+
+        <div class="form-control">
+            <label>Description</label>
+            {% render_field form.description class="textarea textarea-bordered textarea-xs max-w-xs" %}
+        </div>
+
+        <div class="form-control"
+             hx-post="{% url 'update-submit-todo' %}"
+             hx-trigger="change"
+             hx-target="#optional_complete_before_wrapper"
+             hx-swap="innerHTML">
+            <label>Priority</label>
+            {% render_field form.priority class="select select-bordered max-w-xs" %}
+        </div>
+
+        <div class="form-control" id="optional_complete_before_wrapper">
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>
+
+{% endblock %}

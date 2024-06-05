@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.0.9/dist/full.min.css"
+          rel="stylesheet" type="text/css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.8"
+            integrity="sha384-rgjA7mptc2ETQqXoYC3/zJvkU7K/aP44Y+z7xQuJiVnB/422P/Ak+F/AqFR7E4Wr"
+            crossorigin="anonymous"></script>
+
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
+<div class="navbar bg-base-100">
+    <div class="navbar-start">
+        <a class="btn btn-ghost text-xl"
+           hx-get="{% url 'todo_list' %}"
+           hx-target="#center-main"
+           hx-swap="innerHTML">TODO App</a>
+    </div>
+    <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+            <li>
+                <a hx-get="{% url 'todo_new' %}"
+                   hx-target="#center-main"
+                   hx-swap="innerHTML">Create Todo</a>
+            </li>
+            <li>
+                <a hx-get="{% url 'todo_list' %}"
+                   hx-target="#center-main"
+                   hx-swap="innerHTML">My Todos</a>
+            </li>
+        </ul>
+    </div>
+    <div class="navbar-end">
+        {% if user.is_authenticated %}
+            <a hx-get="{% url 'account_logout' %}"
+               hx-target="#center-main"
+               hx-swap="innerHTML"
+               class="btn">Logout</a>
+        {% else %}
+            <a hx-get="{% url 'account_login' %}"
+               hx-target="#center-main"
+               hx-swap="innerHTML"
+               class="btn">Login</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-4">
+    <div id='center-main' class="flex flex-col items-center mx-10 md:mx-20"
+        hx-get="{% url 'todo_list' %}"
+        hx-trigger="load"
+        hx-target="#center-main"
+        hx-swap="innerHTML">
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+
+</body>
+</html>

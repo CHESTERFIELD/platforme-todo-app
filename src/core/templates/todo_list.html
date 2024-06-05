@@ -1,0 +1,41 @@
+{% load tz_detect %}
+{% tz_detect %}
+{% load widget_tweaks %}
+{% load partials %}
+
+{% block content %}
+    {% if todo_list %}
+        <h1 class="prose-2xl mb-4">{{ user.username | upper }}'s todos list</h1>
+
+        <form hx-get="{% url 'todo_list' %}"
+              hx-trigger="change"
+              hx-target="#center-main"
+              hx-swap="innerHTML">
+            {{ filter_form }}
+        </form>
+
+        <table class="table table-zebra table-lg" style="text-align: center;" >
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Created</th>
+                    <th>Priority</th>
+                    <th>Complete Before</th>
+                    <th>Completed</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="todo-table-body">
+                {% include 'todo_list_partial.html' %}
+            </tbody>
+        </table>
+    {% else %}
+        <div hx-get="{% url 'todo_new' %}"
+             hx-trigger="load"
+             hx-target="#center-main"
+             hx-swap="innerHTML">
+        </div>
+    {% endif %}
+
+{% endblock %}

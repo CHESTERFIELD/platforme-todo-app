@@ -1,0 +1,35 @@
+{% load widget_tweaks %}
+{% load partials %}
+
+{% for todo in todo_list %}
+    {% partialdef todoitem-partial inline=True %}
+    <tr>
+        <td>{{ todo.title | truncatechars:20 }}</td>
+        <td>{{ todo.description | truncatechars:20 }}</td>
+        <td>{{ todo.created_at }}</td>
+        <td>{{ todo.priority | upper }}</td>
+        <td>
+            {% if todo.complete_before %}
+                {{ todo.complete_before }} {% if todo.complete_before < now and not todo.is_completed %} <b>OVERDUE</b> {% endif %}
+            {% else %} NOT SPECIFIED {% endif %}
+        </td>
+        <td>{{ todo.is_completed }}</td>
+        <td>
+            {% if not todo.is_completed %}
+                <button class="btn btn-xs btn-success"
+                    hx-post="{% url 'complete-todo' todo.pk %}"
+                    hx-target="closest tr"
+                    hx-swap="outerHTML">Mark Complete</button>
+
+                <button class="btn btn-xs btn-info"
+                    hx-get="{% url 'todo_edit' todo.pk %}">Edit</button>
+            {% endif %}
+            <button class="btn btn-xs btn-warning"
+                    hx-get="{% url 'todo_view' todo.pk %}">Details</button>
+            <button class="btn btn-xs btn-error"
+                hx-delete="{% url 'delete-todo' todo.pk %}"
+                hx-on:delete-todo="this.closest('tr').remove()">Delete</button>
+        </td>
+    </tr>
+    {% endpartialdef %}
+{% endfor %}

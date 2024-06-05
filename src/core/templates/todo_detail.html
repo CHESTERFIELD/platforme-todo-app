@@ -1,0 +1,46 @@
+{% load widget_tweaks %}
+{% load partials %}
+
+{% block content %}
+
+<div class="p-6 w-96 bg-base-200">
+    <div class="bg-white shadow-md rounded px-6 pt-6 pb-6 mb-4">
+        <div class="mb-4">
+            <h2 class="text-2xl font-bold">Task Details</h2>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Title:</label>
+            <p class="text-gray-700">{{ object.title }}</p>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
+            <p class="text-gray-700">{% if object.description %}{{ object.description }} {% else %} - {% endif %}</p>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Priority:</label>
+            <p class="text-gray-700">{{ object.priority | upper }}</p>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Completed:</label>
+            <p class="text-gray-700">{{ object.is_completed }}</p>
+        </div>
+        {% if object.priority == "high" %}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Complete Before:</label>
+                <p class="text-gray-700">{{ object.complete_before }}{% if todo.complete_before < now and not object.is_completed %} <b>OVERDUE</b> {% endif %} </p>
+            </div>
+        {% endif %}
+
+        <div class="flex items-center justify-between">
+            {% if not todo.is_completed %}
+                <button class="btn btn-xs btn-warning"
+                        hx-get="{% url 'todo_edit' object.pk %}">Edit</button>
+            {% endif %}
+            <button class="btn btn-xs btn-error"
+                hx-delete="{% url 'delete-todo' object.pk %}" hx-vals='{"redirect": "true"}'>Delete</button>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
