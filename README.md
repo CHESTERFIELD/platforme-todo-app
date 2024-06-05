@@ -1,4 +1,4 @@
-# Django-htmx-celery Todo Appw
+# Django-htmx-celery Todo App
 
 The simple Todo app to track progress of daily tasks.
 
